@@ -4,7 +4,7 @@ const Main = () => {
   const [counter, setCounter] = useState(0);
   const [data, setData] = useState("");
   const [userInfo, setUserInfo] = useState([]);
-  const [name, setName] = useState('Mario')
+ 
   useEffect(() => {
     fetchAPI()
   }, []);
@@ -39,13 +39,14 @@ const Main = () => {
       userData = await res.json()
       console.log(userData)
       setData(JSON.stringify(userData))
-      setUserInfo(userData.results)
+      const newUserInfo = [...userInfo, ...userData.results]
+      setUserInfo(newUserInfo)
       return userData
     } catch (error) {
         console.log(error)
     }
   }
-  console.log(name);
+
   return (
     <div>
       <h1 className='main--title'>React Counter</h1>
@@ -66,8 +67,7 @@ const Main = () => {
             </div>
           ))
         }
-        <h1>{name}</h1>
-        <button onClick={() => setName('Luigi')}>change name</button>
+
       </div>
     </div>
   )
