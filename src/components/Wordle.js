@@ -6,8 +6,19 @@ const WORD_LENGTH = 5;
 const Wordle = () => {
   
   const [solution, setSolution] = useState('');
-  const [guesses, setGuesses] = useState(Array(6).fill(null))
+  const [guesses, setGuesses] = useState(Array(6).fill(null));
+  const [currentGuess, setCurrentGuess] = useState('');
   
+  useEffect(() => {
+    const handleType = (event) => {
+        setCurrentGuess(oldGuess => oldGuess + event.key)
+    };
+
+    window.addEventListener('keydown', handleType);
+
+    return () => window.addEventListener('keydown', handleType);
+  }, [])
+
   useEffect(() => {
     fetchWord();
   }, [])
@@ -16,17 +27,18 @@ const Wordle = () => {
     const response = await fetch(api_endpoint);
     const words = await response.json();
     const randomWord = words[Math.floor(Math.random() * words.length)];
-    setSolution(randomWord)
-    return words
+    setSolution(randomWord);
+    return words;
   }
     return (
     <div className='board'>
         <h1>Here is the word</h1>
         <h1>{solution}</h1>
         {
-            guesses.map(guess => {
+            guesses.map((guess, i) => {
+                const isCurrentGuess = i === guesses.findIndex(val => val == null);
                 return(
-                    <Line guess= { guess ?? '' } /> // a guess word or an empty string
+                    <Line guess= { isCurrentGuess ? currentGuess: guess ?? '' } /> // a guess word or an empty string
                 )
             })
         }
